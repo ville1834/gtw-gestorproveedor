@@ -59,8 +59,10 @@ fastify.post('/gateway-management', function (req, reply) {
             let res = eval(funcion);
             console.log("String : ", res);
             //console.log("Ejecucion String : ", sumar(2, 3));
+            reply.code(200).send(res)
           });
           console.log('libreria.cliente...');
+          
         } catch (error) {
           console.log('error...libreria.cliente', error);
           response.result = { app: 'gp', status: '99', mensaje: `Error : ${error}` };
