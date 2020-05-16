@@ -10,11 +10,13 @@ const redis_client = redis.createClient(
   });
 
 redis_client.on('connect', function () {
-  console.log('connected');
+  console.log('conect to redis...');
 });
 
 fastify.post('/gateway-management', function (req, reply) {
-  //var obj = JSON.parse(req.body)
+  //var obj = JSON.parse(req.body)  
+  console.log('conect to gateway-management... : ',req.body);
+  
   const { destinationCod, destinationName } = req.body.credentials;
   let libreria = null;
   let response = new Object()
@@ -23,30 +25,38 @@ fastify.post('/gateway-management', function (req, reply) {
 
   redis_client.get(destinationCod, (err, gateway) => {
     //var t0 = performance.now();
+    console.log('conect to gateway-management...');
+    
     if (err) {
+      console.log('err...');
       response.result = { app: 'gp', status: '06', mensaje: `Error` };
       reply.send(200, response)
     }
     if (gateway) {
+      console.log('gateway...');
       if (gateway === destinationName) {
         try {
-          libreria = require('./gateways/' + gateway)
+          console.log('gateway...destinationName');
+          
+          libreria = require('./gateways/' + gateway)          
           libreria.cliente(req.body, transactionId('GM-')).then((respuesta) => {
             //var t1 = performance.now();
             response.result = respuesta;
-            reply.send(200, response)
+            reply.code(200).send(response)
           });
+          console.log('libreria.cliente...');
         } catch (error) {
+          console.log('error...libreria.cliente',error);
           response.result = { app: 'gp', status: '99', mensaje: `Error : ${error}` };
-          reply.send(500, response)
+          reply.code(500).send(response)
         }
       } else {
         response.result = { app: 'gp', status: '03', mensaje: `No Existe el destino con nombre : ${destinationName}` };
-        reply.send(500, response)
+        reply.code(500).send(response)
       }
     } else {
       response.result = { app: 'gp', status: '04', mensaje: `No Existe el destino con codigo : ${destinationCod}` };
-      reply.send(500, response)
+      reply.code(500).send(response)
     }
   });
 });
