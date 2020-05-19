@@ -61,7 +61,7 @@ fastify.post('/gateway-management', function (req, reply) {
     if (err) {
       console.log('err...');
       response.result = { app: 'gp', status: '06', mensaje: `Error` };
-      reply.send(200, response)
+      reply.send(200).send(response)
     }
     if (gateway) {
       console.log('gateway...');
@@ -74,6 +74,7 @@ fastify.post('/gateway-management', function (req, reply) {
         //aplicamos Eval al body
         script= script.replace("$body$",req.body);
         script= script.replace("$transactionId$",1);
+        console.log("script : ", script);
         let res = eval(script);
         console.log("String : ", res);
         response.result = res;
