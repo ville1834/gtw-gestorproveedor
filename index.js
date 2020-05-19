@@ -79,9 +79,15 @@ fastify.post('/gateway-management', function (req, reply) {
 
         console.log("script : ", script);
         let res = eval(script);
-        console.log("String : ", res);
-        response.result = res;
-        reply.code(200).send(response)
+        cliente(req.body, 1).then((respuesta) => {
+          console.log("String XXX : ", respuesta);
+          response.result = respuesta;
+          reply.code(200).send(response)
+        });
+
+        
+        //response.result = res;
+        //reply.code(200).send(response)
         console.log('Termino...');
 
       } catch (error) {
