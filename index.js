@@ -72,8 +72,11 @@ fastify.post('/gateway-management', function (req, reply) {
         let script =  gateway.script;
         
         //aplicamos Eval al body
-        script= script.replace("$body$",req.body);
+        console.log("req.body : ", req.body);
+        
+        script= script.replace("$body$",JSON.stringify(req.body));
         script= script.replace("$transactionId$",1);
+
         console.log("script : ", script);
         let res = eval(script);
         console.log("String : ", res);
