@@ -90,6 +90,12 @@ fastify.post('/gateway-management', function (req, reply) {
       reply.code(500).send(response)
     }
   });
+}).get('/emit', function (req, reply) {
+  //stompClient.publish(destination, "appId");
+  stompClient.publish(destination, 'function sumar(a, b){return a + b;}sumar(5, 9);');
+  //stompClient.publish(destination, '{ "id": "rest-banbif-client", "script": "const axios=require(´axios´),qs=require(´qs´);function cliente(a,t){var e=new Object,{url:s,timeout:n}=a.credentials;a.dataMapping[0].data=qs.stringify(a.dataMapping[0].data),a.dataMapping[0].timeout=n,a.dataMapping[0].url=s;try{const t=axios(a.dataMapping[0]).data;e.status=´00´,e.mensaje=t}catch(a){e.status=ERROR´,void 0===a.response?e.mensaje=a.message:e.mensaje=a.response.data}return e}cliente($body$,$transactionId$);" }');
+
+  reply.send({ result: 'emit-exitoso' })
 });
 
 // Run the server!
