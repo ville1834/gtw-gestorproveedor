@@ -69,18 +69,22 @@ fastify.post('/gateway-management', function (req, reply) {
         console.log('Encontro objeto redis...');
 
         //consultamos el redis con key (rest-banbif-client)
-        let script =  gateway.script;
-        
+        let script = gateway.script;
+
         //aplicamos Eval al body
         console.log("req.body : ", req.body);
 
         //set credenciales
-        let data = req.body ;
-        data.dataMapping[0].data.client_id = gateway.username;
-        data.dataMapping[0].data.client_secret = gateway.password;
-                
-        script= script.replace("$body$",JSON.stringify(data));
-        script= script.replace("$transactionId$",1);
+
+        let data = req.body;
+
+        if (data.dataMapping[0].data) {
+          data.dataMapping[0].data.client_id = gateway.username;
+          data.dataMapping[0].data.client_secret = gateway.password;
+        }
+        
+        script = script.replace("$body$", JSON.stringify(data));
+        script = script.replace("$transactionId$", 1);
 
         console.log("script : ", script);
         let res = eval(script);
@@ -91,7 +95,7 @@ fastify.post('/gateway-management', function (req, reply) {
           reply.code(200).send(response)
         });
 
-        
+
         //response.result = res;
         //reply.code(200).send(response)
         console.log('Termino...');
