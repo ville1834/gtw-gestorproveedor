@@ -73,12 +73,18 @@ fastify.post('/gateway-management', function (req, reply) {
         
         //aplicamos Eval al body
         console.log("req.body : ", req.body);
-        
-        script= script.replace("$body$",JSON.stringify(req.body));
+
+        //set credenciales
+        let data = req.body ;
+        data.dataMapping[0].data.client_id = gateway.username;
+        data.dataMapping[0].data.client_secret = gateway.password;
+                
+        script= script.replace("$body$",JSON.stringify(data));
         script= script.replace("$transactionId$",1);
 
         console.log("script : ", script);
         let res = eval(script);
+
         cliente(req.body, 1).then((respuesta) => {
           console.log("String XXX : ", respuesta);
           response.result = respuesta;
