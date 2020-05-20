@@ -57,7 +57,7 @@ fastify.post('/gateway-management', function (req, reply) {
   redis_client.hgetall(destinationCod, function (err, gateway) {
     if (err) {
       console.log('err...');
-      response.result = { app: 'gp', status: '06', mensaje: `Error` };
+      response.dataMapping = { app: 'gp', status: '06', mensaje: `Error` };
       reply.send(200).send(response)
     }
     if (gateway) {
@@ -78,17 +78,17 @@ fastify.post('/gateway-management', function (req, reply) {
         eval(script);
         //llamamos funcion del script
         cliente(data, 1).then((respuesta) => {
-          response.result = respuesta;
+          response.dataMapping = respuesta;
           reply.code(200).send(response)
         });
         console.log('Termino...');
       } catch (error) {
         console.log('error...try', error);
-        response.result = { app: 'gp', status: '99', mensaje: `Error : ${error}` };
+        response.dataMapping = { app: 'gp', status: '99', mensaje: `Error : ${error}` };
         reply.code(500).send(response)
       }
     } else {
-      response.result = { app: 'gp', status: '04', mensaje: `No Existe el destino con codigo : ${destinationCod}` };
+      response.dataMapping = { app: 'gp', status: '04', mensaje: `No Existe el destino con codigo : ${destinationCod}` };
       reply.code(500).send(response)
     }
   });
@@ -96,7 +96,7 @@ fastify.post('/gateway-management', function (req, reply) {
   //stompClient.publish(destination, "appId");
   stompClient.publish(destination, 'function sumar(a, b){return a + b;}sumar(5, 9);');
   //stompClient.publish(destination, '{ "id": "rest-banbif-client", "script": "const axios=require(´axios´),qs=require(´qs´);function cliente(a,t){var e=new Object,{url:s,timeout:n}=a.credentials;a.dataMapping[0].data=qs.stringify(a.dataMapping[0].data),a.dataMapping[0].timeout=n,a.dataMapping[0].url=s;try{const t=axios(a.dataMapping[0]).data;e.status=´00´,e.mensaje=t}catch(a){e.status=ERROR´,void 0===a.response?e.mensaje=a.message:e.mensaje=a.response.data}return e}cliente($body$,$transactionId$);" }');
-  reply.send({ result: 'emit-exitoso' })
+  reply.send({ dataMapping: 'emit-exitoso' })
 });
 
 // Run the server!
