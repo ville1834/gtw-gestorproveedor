@@ -75,22 +75,30 @@ fastify.post('/gateway-management', function (req, reply) {
         console.log("req.body : ", req.body);
 
         //set credenciales
-
+        
         let data = req.body;
-
+        /*
         if (data.dataMapping[0].data) {
           data.dataMapping[0].data.client_id = gateway.username;
           data.dataMapping[0].data.client_secret = gateway.password;
         }
+        */
+
+        if (data.dataMapping) {
+          let dataString = JSON.stringify(data.dataMapping);
+          dataString = dataString.replace("$username$", gateway.username);
+          dataString = dataString.replace("$password$", gateway.password);
+          data.dataMapping = JSON.parse(dataString);
+        }
         
-        script = script.replace("$body$", JSON.stringify(data));
-        script = script.replace("$transactionId$", 1);
-
+        //script = script.replace("$body$", JSON.stringify(data));
+        //script = script.replace("$transactionId$", 1);
+        
         console.log("script : ", script);
-        let res = eval(script);
+        eval(script);
 
-        cliente(req.body, 1).then((respuesta) => {
-          console.log("String XXX : ", respuesta);
+        cliente(data, 1).then((respuesta) => {
+          //console.log("String XXX : ", respuesta);
           response.result = respuesta;
           reply.code(200).send(response)
         });
